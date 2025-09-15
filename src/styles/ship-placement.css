@@ -1,0 +1,782 @@
+/**
+ * Ship Placement Styles
+ * Includes accessibility features and mobile touch support
+ */
+
+/* =============================================
+   PLACEMENT GRID
+   ============================================= */
+
+.placement-grid {
+  width: 100%;
+  max-width: 100%;
+  touch-action: none; /* Prevent default touch behaviors */
+}
+
+.grid-container {
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.grid-cell {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.grid-cell::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.grid-cell:hover::before,
+.grid-cell:focus::before {
+  opacity: 1;
+}
+
+.grid-cell:hover,
+.grid-cell:focus {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.05);
+}
+
+.grid-cell:focus {
+  outline: 2px solid #fbbf24;
+  outline-offset: -2px;
+  z-index: 10;
+}
+
+.grid-cell.has-ship {
+  background: linear-gradient(45deg, #374151, #6b7280);
+  border-color: #9ca3af;
+}
+
+.grid-cell.valid-drop {
+  background: rgba(34, 197, 94, 0.3);
+  border-color: #22c55e;
+  animation: pulse-valid 1.5s infinite;
+}
+
+.grid-cell.colliding {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: #ef4444;
+  animation: pulse-invalid 1s infinite;
+}
+
+.grid-cell.preview {
+  background: rgba(168, 85, 247, 0.4);
+  border-color: #a855f7;
+  box-shadow: inset 0 0 8px rgba(168, 85, 247, 0.5);
+}
+
+/* =============================================
+   PLACED SHIPS
+   ============================================= */
+
+.placed-ship {
+  background: linear-gradient(135deg, #374151, #4b5563, #374151);
+  border: 2px solid #9ca3af;
+  color: #f9fafb;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  cursor: grab;
+  will-change: transform;
+}
+
+.placed-ship:active,
+.placed-ship.dragging {
+  cursor: grabbing;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+}
+
+.placed-ship:hover {
+  border-color: #d1d5db;
+  transform: scale(1.02);
+}
+
+.placed-ship:focus {
+  outline: 2px solid #fbbf24;
+  outline-offset: 2px;
+}
+
+.ship-preview {
+  border-style: dashed;
+  animation: preview-fade 0.8s infinite alternate;
+}
+
+/* =============================================
+   SHIP SELECTOR
+   ============================================= */
+
+.ship-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  backdrop-filter: blur(8px);
+}
+
+.ship-cards {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
+}
+
+.ship-card {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.ship-card:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.ship-card:focus {
+  outline: 2px solid #fbbf24;
+  outline-offset: 2px;
+}
+
+.ship-card.selected {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+.ship-card.placed {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.ship-card.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.ship-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.ship-icon {
+  font-size: 1.25rem;
+}
+
+.ship-info {
+  flex: 1;
+}
+
+.ship-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: 1.2;
+}
+
+.ship-type {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.ship-visual {
+  margin-top: 0.5rem;
+}
+
+.ship-segment {
+  background: linear-gradient(135deg, #374151, #4b5563);
+  border: 1px solid #6b7280;
+}
+
+.ship-card-actions {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.action-button {
+  padding: 0.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.action-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.action-button:focus {
+  outline: 1px solid #fbbf24;
+}
+
+/* =============================================
+   FLEET STATUS
+   ============================================= */
+
+.fleet-status {
+  margin-bottom: 1rem;
+}
+
+.fleet-progress {
+  margin-bottom: 0.5rem;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.progress-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.progress-text {
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #3b82f6;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.validation-success {
+  color: #22c55e;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.validation-error {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.validation-warning {
+  color: #f59e0b;
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+/* =============================================
+   AUTO PLACEMENT CONTROLS
+   ============================================= */
+
+.auto-placement-controls {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+.controls-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.expand-button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.875rem;
+  padding: 0.25rem;
+}
+
+.strategy-selector {
+  margin-bottom: 0.75rem;
+}
+
+.strategy-selector label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.strategy-select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  color: inherit;
+}
+
+.strategy-description {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin-top: 0.25rem;
+}
+
+.control-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.control-buttons button {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  color: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.control-buttons button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.control-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =============================================
+   MAIN SHIP PLACEMENT
+   ============================================= */
+
+.ship-placement {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.placement-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-info h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.player-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+.player-name {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.time-remaining {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #f59e0b;
+}
+
+.placement-content {
+  display: flex;
+  flex: 1;
+  gap: 1.5rem;
+}
+
+.selector-section {
+  flex: 0 0 300px;
+  min-width: 280px;
+}
+
+.grid-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placement-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.primary-controls {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.complete-button {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.complete-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  transform: translateY(-1px);
+}
+
+.complete-button:disabled {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+}
+
+.clear-button {
+  padding: 0.75rem 1rem;
+  background: rgba(239, 68, 68, 0.8);
+  border: 1px solid #dc2626;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-button:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.9);
+}
+
+/* =============================================
+   TUTORIAL HINTS
+   ============================================= */
+
+.tutorial-hint {
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  border-left: 4px solid;
+}
+
+.tutorial-hint.hint-info {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+}
+
+.tutorial-hint.hint-success {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: #22c55e;
+}
+
+.tutorial-hint.hint-warning {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: #f59e0b;
+}
+
+.tutorial-hint.hint-error {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+}
+
+.hint-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.hint-dismiss {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+.hint-dismiss:hover {
+  opacity: 1;
+}
+
+/* =============================================
+   ANIMATIONS
+   ============================================= */
+
+@keyframes pulse-valid {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0);
+  }
+}
+
+@keyframes pulse-invalid {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0);
+  }
+}
+
+@keyframes preview-fade {
+  0% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0.9;
+  }
+}
+
+/* =============================================
+   ACCESSIBILITY
+   ============================================= */
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .grid-cell {
+    border-color: currentColor;
+  }
+
+  .placed-ship {
+    border-color: currentColor;
+  }
+
+  .ship-card {
+    border-color: currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .grid-cell:hover {
+    transform: none;
+  }
+
+  .placed-ship:hover {
+    transform: none;
+  }
+}
+
+/* =============================================
+   MOBILE RESPONSIVE
+   ============================================= */
+
+@media (max-width: 768px) {
+  .ship-placement {
+    padding: 0.5rem;
+  }
+
+  .placement-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .selector-section {
+    flex: none;
+    min-width: auto;
+    order: 2;
+  }
+
+  .grid-section {
+    order: 1;
+  }
+
+  .grid-container {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .ship-cards {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  .placement-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+
+  .primary-controls {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .player-info {
+    align-items: flex-start;
+  }
+
+  .ship-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .primary-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .complete-button,
+  .clear-button {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* =============================================
+   TOUCH ENHANCEMENTS
+   ============================================= */
+
+@media (hover: none) and (pointer: coarse) {
+  .grid-cell {
+    min-height: 44px; /* Minimum touch target size */
+    min-width: 44px;
+  }
+
+  .action-button {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.5rem;
+  }
+
+  .ship-card {
+    padding: 1rem;
+  }
+
+  /* Remove hover states on touch devices */
+  .grid-cell:hover,
+  .placed-ship:hover,
+  .ship-card:hover,
+  .action-button:hover {
+    transform: none;
+    background: initial;
+    border-color: initial;
+  }
+}
+
+/* =============================================
+   LOADING AND STATES
+   ============================================= */
+
+.auto-placement-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: white;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-message {
+  font-size: 1.125rem;
+  font-weight: 500;
+}

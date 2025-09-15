@@ -1,0 +1,69 @@
+{
+  "recommendations": [
+    // Essential Extensions
+    "dbaeumer.vscode-eslint",              // ESLint
+    "esbenp.prettier-vscode",               // Prettier
+    "ms-vscode.vscode-typescript-next",     // TypeScript Language Features
+    "bradlc.vscode-tailwindcss",            // Tailwind CSS IntelliSense
+
+    // React & Next.js Development
+    "dsznajder.es7-react-js-snippets",      // React Snippets
+    "burkeholland.simple-react-snippets",   // Simple React Snippets
+    "pulkitgangwar.nextjs-snippets",        // Next.js Snippets
+
+    // Database & SQL
+    "mtxr.sqltools",                        // SQL Tools
+    "mtxr.sqltools-driver-pg",              // PostgreSQL Driver
+    "prisma.prisma",                        // Prisma Support
+    "cweijan.vscode-database-client2",      // Database Client
+
+    // Git & Version Control
+    "eamodio.gitlens",                      // GitLens
+    "donjayamanne.githistory",              // Git History
+    "mhutchie.git-graph",                   // Git Graph
+
+    // Code Quality & Productivity
+    "streetsidesoftware.code-spell-checker", // Spell Checker
+    "aaron-bond.better-comments",            // Better Comments
+    "christian-kohler.path-intellisense",    // Path Intellisense
+    "formulahendry.auto-rename-tag",         // Auto Rename Tag
+    "naumovs.color-highlight",               // Color Highlight
+    "oderwat.indent-rainbow",                // Indent Rainbow
+    "wayou.vscode-todo-highlight",           // TODO Highlight
+    "gruntfuggly.todo-tree",                 // Todo Tree
+
+    // Testing
+    "orta.vscode-jest",                      // Jest Runner
+    "firsttris.vscode-jest-runner",          // Jest Test Explorer
+
+    // API Development & Testing
+    "rangav.vscode-thunder-client",          // Thunder Client (REST API)
+    "humao.rest-client",                     // REST Client
+    "42crunch.vscode-openapi",               // OpenAPI (Swagger) Editor
+
+    // Docker & DevOps
+    "ms-azuretools.vscode-docker",           // Docker
+    "ms-vscode-remote.remote-containers",    // Dev Containers
+
+    // Utilities
+    "yzhang.markdown-all-in-one",            // Markdown All in One
+    "davidanson.vscode-markdownlint",        // Markdown Lint
+    "mikestead.dotenv",                      // DotENV
+    "redhat.vscode-yaml",                    // YAML
+    "zixuanchen.vitest-explorer",            // Vitest Explorer
+    "usernamehw.errorlens",                  // Error Lens
+    "wix.vscode-import-cost",                // Import Cost
+    "PKief.material-icon-theme",             // Material Icon Theme
+    "zhuangtongfa.material-theme",           // One Dark Pro Theme
+
+    // AI Assistance (Optional)
+    "github.copilot",                        // GitHub Copilot
+    "tabnine.tabnine-vscode",                // Tabnine AI
+    "continue.continue"                      // Continue AI Assistant
+  ],
+
+  "unwantedRecommendations": [
+    "ms-vscode.vscode-typescript-tslint-plugin", // Deprecated
+    "hookyqr.beautify"                            // Use Prettier instead
+  ]
+}

@@ -1,0 +1,41 @@
+# Development Dockerfile for Battleship Naval Strategy Game
+FROM node:20-alpine AS base
+
+# Install dependencies for canvas (Konva.js) and PostgreSQL client
+RUN apk add --no-cache \
+    cairo-dev \
+    pango-dev \
+    jpeg-dev \
+    giflib-dev \
+    librsvg-dev \
+    pixman-dev \
+    python3 \
+    make \
+    g++ \
+    postgresql-client
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy application files
+COPY . .
+
+# Expose ports
+EXPOSE 3000 5133
+
+# Set environment to development
+ENV NODE_ENV=development
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => {r.statusCode === 200 ? process.exit(0) : process.exit(1)})"
+
+# Start development server with hot reload
+CMD ["npm", "run", "dev"]

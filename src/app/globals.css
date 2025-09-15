@@ -1,0 +1,461 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Custom Properties for Theme Variables */
+:root {
+  /* Primary color palette (Navy theme) */
+  --color-primary-50: 240 249 255;
+  --color-primary-100: 224 242 254;
+  --color-primary-200: 186 230 253;
+  --color-primary-300: 125 211 252;
+  --color-primary-400: 56 189 248;
+  --color-primary-500: 14 165 233;
+  --color-primary-600: 2 132 199;
+  --color-primary-700: 3 105 161;
+  --color-primary-800: 7 89 133;
+  --color-primary-900: 12 74 110;
+
+  /* Light theme variables */
+  --bg-primary: 248 250 252;
+  --bg-secondary: 241 245 249;
+  --bg-tertiary: 255 255 255;
+  --text-primary: 15 23 42;
+  --text-secondary: 51 65 85;
+  --text-tertiary: 100 116 139;
+  --border-primary: 226 232 240;
+  --border-secondary: 203 213 225;
+  --shadow-color: 0 0 0;
+  --shadow-alpha: 0.1;
+
+  /* Game board colors */
+  --game-water: 14 165 233;
+  --game-ship: 31 41 55;
+  --game-hit: 220 38 38;
+  --game-miss: 107 114 128;
+  --game-sunk: 153 27 27;
+
+  /* Status colors */
+  --status-online: 16 185 129;
+  --status-offline: 107 114 128;
+  --status-waiting: 245 158 11;
+  --status-playing: 59 130 246;
+}
+
+.dark {
+  /* Dark theme overrides */
+  --bg-primary: 2 6 23;
+  --bg-secondary: 15 23 42;
+  --bg-tertiary: 30 41 59;
+  --text-primary: 248 250 252;
+  --text-secondary: 203 213 225;
+  --text-tertiary: 148 163 184;
+  --border-primary: 51 65 85;
+  --border-secondary: 71 85 105;
+  --shadow-color: 0 0 0;
+  --shadow-alpha: 0.3;
+
+  /* Dark theme game colors */
+  --game-water: 6 182 212;
+  --game-ship: 203 213 225;
+  --game-hit: 239 68 68;
+  --game-miss: 156 163 175;
+  --game-sunk: 185 28 28;
+}
+
+@layer base {
+  * {
+    @apply border-steel-200 dark:border-steel-700;
+  }
+
+  html {
+    @apply scroll-smooth;
+    color-scheme: light dark;
+  }
+
+  body {
+    @apply antialiased;
+    background-color: rgb(var(--bg-primary));
+    color: rgb(var(--text-primary));
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Typography improvements */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-semibold text-shadow;
+  }
+
+  h1 {
+    @apply text-4xl lg:text-5xl;
+  }
+
+  h2 {
+    @apply text-3xl lg:text-4xl;
+  }
+
+  h3 {
+    @apply text-2xl lg:text-3xl;
+  }
+
+  p {
+    @apply text-base leading-relaxed;
+  }
+
+  /* Focus styles for accessibility */
+  :focus-visible {
+    @apply outline-none ring-2 ring-navy-500 ring-offset-2 ring-offset-white dark:ring-offset-steel-900;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-steel-100 dark:bg-steel-800 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-steel-400 dark:bg-steel-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-steel-500 dark:bg-steel-500;
+  }
+}
+
+@layer components {
+  /* Button Components */
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-sm;
+  }
+
+  .btn-lg {
+    @apply px-6 py-3 text-lg;
+  }
+
+  .btn-primary {
+    @apply bg-navy-600 hover:bg-navy-700 focus:ring-navy-500 text-white shadow-naval;
+  }
+
+  .btn-secondary {
+    @apply bg-steel-600 hover:bg-steel-700 focus:ring-steel-500 text-white shadow-md;
+  }
+
+  .btn-outline {
+    @apply border-2 border-navy-600 text-navy-600 hover:bg-navy-600 hover:text-white focus:ring-navy-500;
+  }
+
+  .btn-ghost {
+    @apply text-steel-600 hover:bg-steel-100 dark:hover:bg-steel-800 focus:ring-steel-500;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-700 focus:ring-red-500 text-white;
+  }
+
+  .btn-success {
+    @apply bg-green-600 hover:bg-green-700 focus:ring-green-500 text-white;
+  }
+
+  /* Card Components */
+  .card {
+    @apply bg-white dark:bg-steel-800 rounded-xl shadow-maritime border border-steel-200 dark:border-steel-700 p-6 transition-all duration-200;
+  }
+
+  .card-compact {
+    @apply p-4;
+  }
+
+  .card-spacious {
+    @apply p-8;
+  }
+
+  .card-hover {
+    @apply hover:shadow-ocean-depth hover:-translate-y-1;
+  }
+
+  .card-glass {
+    @apply glass-effect backdrop-blur-md;
+  }
+
+  .card-maritime {
+    @apply maritime-pattern;
+  }
+
+  /* Game-specific components */
+  .game-board {
+    @apply grid grid-cols-game-board grid-rows-game-board gap-1 p-4 bg-ocean-100 dark:bg-ocean-900 rounded-xl shadow-ocean-depth;
+  }
+
+  .game-cell {
+    @apply game-board-cell bg-ocean-200 dark:bg-ocean-800 rounded cursor-pointer;
+  }
+
+  .game-cell-water {
+    @apply bg-game-water text-white;
+  }
+
+  .game-cell-ship {
+    @apply bg-game-ship text-white;
+  }
+
+  .game-cell-hit {
+    @apply bg-game-hit text-white animate-pulse;
+  }
+
+  .game-cell-miss {
+    @apply bg-game-miss text-white opacity-60;
+  }
+
+  .game-cell-sunk {
+    @apply bg-game-sunk text-white;
+  }
+
+  /* Ship components */
+  .ship-card {
+    @apply card aspect-ship-card p-4 cursor-pointer transition-all duration-300;
+  }
+
+  .ship-card-selected {
+    @apply ring-2 ring-navy-500 shadow-glow-blue;
+  }
+
+  .ship-card-available {
+    @apply hover:shadow-maritime hover:-translate-y-1;
+  }
+
+  .ship-card-deployed {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  /* Status indicators */
+  .status-indicator {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .status-online {
+    @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+  }
+
+  .status-offline {
+    @apply bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200;
+  }
+
+  .status-waiting {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+  }
+
+  .status-playing {
+    @apply bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200;
+  }
+
+  /* Modal and overlay components */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 backdrop-blur-sm z-modal;
+  }
+
+  .modal {
+    @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md mx-4 z-modal;
+  }
+
+  .modal-content {
+    @apply card animate-scale-in;
+  }
+
+  /* Loading states */
+  .loading-spinner {
+    @apply inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin;
+  }
+
+  .loading-dots {
+    @apply inline-flex space-x-1;
+  }
+
+  .loading-dots span {
+    @apply w-2 h-2 bg-current rounded-full animate-bounce;
+  }
+
+  .loading-dots span:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .loading-dots span:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+
+  /* Typography components */
+  .text-gradient {
+    @apply bg-gradient-to-r from-navy-600 to-ocean-600 bg-clip-text text-transparent;
+  }
+
+  .text-maritime {
+    @apply text-navy-700 dark:text-ocean-300;
+  }
+
+  /* Form components */
+  .form-input {
+    @apply w-full px-3 py-2 border border-steel-300 dark:border-steel-600 rounded-lg bg-white dark:bg-steel-800 text-steel-900 dark:text-steel-100 placeholder-steel-500 focus:ring-2 focus:ring-navy-500 focus:border-navy-500 transition-colors;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-steel-700 dark:text-steel-300 mb-2;
+  }
+
+  .form-error {
+    @apply text-sm text-red-600 dark:text-red-400 mt-1;
+  }
+
+  /* Navigation components */
+  .nav-link {
+    @apply px-3 py-2 rounded-lg text-steel-700 dark:text-steel-300 hover:bg-steel-100 dark:hover:bg-steel-800 transition-colors;
+  }
+
+  .nav-link-active {
+    @apply bg-navy-100 dark:bg-navy-900 text-navy-700 dark:text-navy-300;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    @apply absolute z-tooltip px-2 py-1 text-xs text-white bg-steel-900 dark:bg-steel-100 dark:text-steel-900 rounded shadow-lg;
+  }
+}
+
+@layer utilities {
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-shadow {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .text-shadow-lg {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Background utilities */
+  .bg-primary {
+    background-color: rgb(var(--bg-primary));
+  }
+
+  .bg-secondary {
+    background-color: rgb(var(--bg-secondary));
+  }
+
+  .bg-tertiary {
+    background-color: rgb(var(--bg-tertiary));
+  }
+
+  /* Border utilities */
+  .border-primary {
+    border-color: rgb(var(--border-primary));
+  }
+
+  .border-secondary {
+    border-color: rgb(var(--border-secondary));
+  }
+
+  /* Game-specific utilities */
+  .water-pattern {
+    background-image:
+      radial-gradient(circle at 20% 80%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(34, 211, 238, 0.1) 0%, transparent 50%);
+  }
+
+  .ship-shadow {
+    box-shadow:
+      0 4px 6px -1px rgba(71, 85, 105, 0.1),
+      0 2px 4px -1px rgba(71, 85, 105, 0.06);
+  }
+
+  /* Animation utilities */
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .animate-radar {
+    animation: radarSweep 2s linear infinite;
+  }
+
+  /* Responsive game layout utilities */
+  .game-layout {
+    @apply grid gap-4;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 1024px) {
+    .game-layout {
+      grid-template-columns: 1fr 400px;
+    }
+  }
+
+  .mobile-game-layout {
+    @apply grid grid-rows-mobile-game h-screen;
+  }
+
+  /* Accessibility utilities */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .focus-visible-only {
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-500 focus-visible:ring-offset-2;
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .btn-primary {
+      @apply border-2 border-navy-800;
+    }
+
+    .game-cell {
+      @apply border-2 border-steel-800 dark:border-steel-200;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-pulse,
+    .animate-bounce,
+    .animate-spin,
+    .animate-float,
+    .animate-glow,
+    .animate-radar {
+      animation: none;
+    }
+
+    * {
+      transition: none !important;
+    }
+  }
+
+  /* Print styles */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+
+    .card {
+      @apply shadow-none border border-steel-300;
+    }
+  }
+}

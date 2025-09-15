@@ -1,0 +1,122 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: battleship-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-battleship_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-battleship_pass}
+      POSTGRES_DB: ${DB_NAME:-battleship_db}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=en_US.utf8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/db/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./scripts/db/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-battleship_user} -d ${DB_NAME:-battleship_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - battleship-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: battleship-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - battleship-network
+
+  # Electric SQL Sync Service
+  electric:
+    image: electricsql/electric:latest
+    container_name: battleship-electric
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${ELECTRIC_DB_USER:-electric}:${ELECTRIC_DB_PASSWORD:-electric_pass}@postgres:5432/${DB_NAME:-battleship_db}
+      ELECTRIC_WRITE_TO_PG_MODE: logical_replication
+      ELECTRIC_AUTH_MODE: ${ELECTRIC_AUTH_MODE:-jwt}
+      ELECTRIC_AUTH_JWT_ALG: ${ELECTRIC_AUTH_JWT_ALG:-HS256}
+      ELECTRIC_AUTH_JWT_KEY: ${ELECTRIC_AUTH_JWT_KEY:-dev_key_change_in_production}
+      LOGICAL_PUBLISHER_HOST: postgres
+      PG_PROXY_PORT: 65432
+      HTTP_PORT: 5133
+    ports:
+      - "5133:5133"
+      - "65432:65432"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - battleship-network
+
+  # Next.js Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: battleship-app
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://${DB_USER:-battleship_user}:${DB_PASSWORD:-battleship_pass}@postgres:5432/${DB_NAME:-battleship_db}
+      REDIS_URL: redis://redis:6379
+      ELECTRIC_SERVICE_URL: http://electric:5133
+      NEXT_PUBLIC_WS_URL: ws://localhost:3000
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - battleship-network
+    command: npm run dev
+
+  # Adminer (Database UI) - Optional
+  adminer:
+    image: adminer:latest
+    container_name: battleship-adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+      ADMINER_DEFAULT_DB: ${DB_NAME:-battleship_db}
+      ADMINER_DEFAULT_USER: ${DB_USER:-battleship_user}
+      ADMINER_DESIGN: pepa-linha
+    depends_on:
+      - postgres
+    networks:
+      - battleship-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  battleship-network:
+    driver: bridge
