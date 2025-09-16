@@ -96,6 +96,26 @@ module.exports = {
           800: 'rgb(var(--color-primary-800) / <alpha-value>)',
           900: 'rgb(var(--color-primary-900) / <alpha-value>)',
         },
+        // Surface colors for UI components
+        surface: {
+          primary: '#1e293b',     // steel-800
+          secondary: '#334155',   // steel-700
+          tertiary: '#475569',    // steel-600
+        },
+        // Neutral grays (alias for steel colors)
+        neutral: {
+          50: '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          500: '#64748b',
+          600: '#475569',
+          700: '#334155',
+          800: '#1e293b',
+          900: '#0f172a',
+          950: '#020617',
+        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],

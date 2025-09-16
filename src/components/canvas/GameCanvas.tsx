@@ -8,26 +8,35 @@
  * responsive sizing, and integration with the existing game state.
  */
 
-import React, { useRef, useEffect, useCallback, useMemo } from 'react'
-import { Stage, Layer } from 'react-konva'
 import Konva from 'konva'
-import { colors } from '../../styles/tokens/colors'
-import { DEFAULTS } from '../../lib/game/utils/constants'
-import {
-  ResponsiveCanvas,
-  CanvasMetrics,
-  getPerformanceRenderingOptions,
-} from '../../lib/canvas/ResponsiveCanvas'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
+import { Layer, Stage } from 'react-konva'
 import {
   CanvasCoordinateTransform,
   createResponsiveCoordinateTransform,
 } from '../../lib/canvas/CoordinateTransform'
 import {
+  CanvasEventData,
   CanvasEventHandler,
   CanvasEventHandlers,
-  CanvasEventData,
 } from '../../lib/canvas/EventHandler'
-import { Coordinate, BoardState } from '../../lib/game/types'
+import {
+  CanvasMetrics,
+  getPerformanceRenderingOptions,
+  ResponsiveCanvas,
+} from '../../lib/canvas/ResponsiveCanvas'
+import { BoardState, Coordinate } from '../../lib/game/types'
+import { DEFAULTS } from '../../lib/game/utils/constants'
+import { colors } from '../../styles/tokens/colors'
+
+/**
+ * Context for sharing canvas state with child components
+ */
+export const GameCanvasContext = React.createContext<{
+  coordinateTransform: CanvasCoordinateTransform | null
+  metrics: CanvasMetrics | null
+  performanceOptions: ReturnType<typeof getPerformanceRenderingOptions>
+} | null>(null)
 
 // =============================================
 // TYPES
@@ -124,6 +133,26 @@ export const GameCanvas = React.forwardRef<GameCanvasRef, GameCanvasProps>(({
   }, [enableAnimations, enableEffects])
 
   // =============================================
+  // STAGE TRANSFORM UPDATE
+  // =============================================
+
+  const updateStageTransform = useCallback(() => {
+    if (!stageRef.current || !stateRef.current.coordinateTransform) return
+
+    const viewport = stateRef.current.coordinateTransform.getViewport()
+
+    stageRef.current.scale({
+      x: viewport.scale,
+      y: viewport.scale,
+    })
+
+    stageRef.current.position({
+      x: viewport.offsetX,
+      y: viewport.offsetY,
+    })
+  }, [])
+
+  // =============================================
   // CANVAS EVENT HANDLERS
   // =============================================
 
@@ -163,26 +192,6 @@ export const GameCanvas = React.forwardRef<GameCanvasRef, GameCanvasProps>(({
       updateStageTransform()
     },
   }), [onCellClick, onCellDoubleClick, onCellHover, updateStageTransform])
-
-  // =============================================
-  // STAGE TRANSFORM UPDATE
-  // =============================================
-
-  const updateStageTransform = useCallback(() => {
-    if (!stageRef.current || !stateRef.current.coordinateTransform) return
-
-    const viewport = stateRef.current.coordinateTransform.getViewport()
-
-    stageRef.current.scale({
-      x: viewport.scale,
-      y: viewport.scale,
-    })
-
-    stageRef.current.position({
-      x: viewport.offsetX,
-      y: viewport.offsetY,
-    })
-  }, [])
 
   // =============================================
   // CANVAS SETUP AND MANAGEMENT
@@ -416,15 +425,6 @@ export const useGameCanvas = () => {
   }
   return canvasContext
 }
-
-/**
- * Context for sharing canvas state with child components
- */
-export const GameCanvasContext = React.createContext<{
-  coordinateTransform: CanvasCoordinateTransform | null
-  metrics: CanvasMetrics | null
-  performanceOptions: ReturnType<typeof getPerformanceRenderingOptions>
-} | null>(null)
 
 /**
  * Provider wrapper for GameCanvas context

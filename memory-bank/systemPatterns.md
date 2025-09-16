@@ -153,11 +153,16 @@ const gameEvents: GameEvent[] = [
 ### Game Engine Core Dependencies
 ```
 GameEngine
-├── ShipManager (manages fleet composition)
-├── CombatResolver (handles attack logic)
-├── AISystem (computer opponent)
-├── ValidationEngine (rule enforcement)
-└── EventEmitter (state change notifications)
+├── GameState (central state management with memory optimization)
+├── Player (player management with statistics tracking)
+├── Ship (ship entities with abilities and damage states)
+├── Board (game board with coordinate system and validation)
+├── CombatEngine (advanced attack processing with powerups)
+├── ShipManager (fleet composition with point balancing)
+├── AbilityEngine (special ship abilities with cooldowns)
+├── AIPlayer (4-level difficulty system with adaptive learning)
+├── ValidationEngine (comprehensive rule enforcement)
+└── EventEmitter (state change notifications for real-time sync)
 ```
 
 ### UI Component Hierarchy
@@ -207,37 +212,66 @@ Database Persistence → Network Sync (if multiplayer)
 
 ### AI Decision Making Path
 1. **Turn Trigger**: Game engine signals AI turn
-2. **Board Analysis**: AI analyzes current game state
-3. **Strategy Selection**: Choose appropriate difficulty strategy
-4. **Target Calculation**: Apply algorithm to select coordinates
-5. **Move Validation**: Ensure move follows game rules
-6. **Action Execution**: Execute attack through game engine
-7. **State Update**: Update game state and UI
-8. **Response Delay**: Simulate human-like thinking time
+2. **Board Analysis**: AI analyzes current game state with probability maps
+3. **Strategy Selection**: Choose from 4 difficulty levels (Beginner to Expert)
+4. **Algorithm Execution**: Apply progressive algorithms:
+   - Beginner: Random targeting with center bias
+   - Intermediate: Hunt/target with checkerboard patterns
+   - Advanced: Probability density maps with Bayesian inference
+   - Expert: Game tree lookahead with Monte Carlo Tree Search
+5. **Target Calculation**: Multi-strategy ensemble for optimal coordinate selection
+6. **Ability Consideration**: Evaluate ship abilities and powerup usage
+7. **Move Validation**: Ensure move follows game rules and authorization
+8. **Action Execution**: Execute attack through combat engine
+9. **Learning Update**: Update behavioral patterns and opponent modeling
+10. **State Update**: Update game state with memory management
+11. **Response Delay**: Simulate realistic thinking time (200ms-2s based on difficulty)
 
 ### Ship Ability Activation Path
-1. **Trigger Condition**: Specific game event occurs
-2. **Ability Check**: Verify ship has required ability
-3. **Cooldown Validation**: Ensure ability is available
-4. **Effect Calculation**: Determine ability impact
-5. **Animation Trigger**: Start visual effect sequence
-6. **State Modification**: Apply ability effects to game state
-7. **Notification**: Inform players of ability activation
-8. **Cooldown Start**: Begin ability cooldown period
+1. **Trigger Condition**: Player action or automatic activation condition
+2. **Ability Validation**: Verify ship type and ability availability
+3. **Cooldown Check**: Ensure ability is not on cooldown
+4. **Resource Validation**: Check if ship is operational (not sunk)
+5. **Target Validation**: Verify valid targets for ability effect
+6. **Effect Calculation**: Apply ability-specific mechanics:
+   - Dreadnought: All Big Guns (enhanced firepower)
+   - Battlecruiser: Speed Advantage (extra actions)
+   - Aircraft Carrier: Scouting (reveal enemy positions)
+   - Submarine: Stealth Mode (immunity to detection)
+   - Destroyer: Depth Charges (anti-submarine warfare)
+   - Modern Ship: Sonar Detection (counter-stealth)
+7. **Combat Integration**: Process ability through combat engine
+8. **State Modification**: Update game state with ability effects
+9. **Animation Trigger**: Queue visual effects for rendering
+10. **Notification System**: Inform all players of ability activation
+11. **Cooldown Management**: Start ability-specific cooldown timer
+12. **Statistics Tracking**: Record ability usage for analytics
 
 ### Performance Optimization Patterns
-- **Memoization**: React.memo for expensive component renders
-- **Virtualization**: Render only visible game elements
-- **Lazy Loading**: Load ship assets and sounds on demand
+- **Memory Management**: Circular buffer for game history (prevents unbounded growth)
+- **AI Caching**: Memoization for expensive probability calculations
+- **Component Memoization**: React.memo for expensive component renders
+- **State Optimization**: Efficient game state updates with minimal re-renders
+- **Algorithm Efficiency**: Optimized collision detection and pathfinding
+- **Incremental Updates**: Probability maps updated incrementally vs full recalculation
+- **Canvas Optimization**: Efficient Konva.js layer management for 60fps
+- **Lazy Loading**: Load ship assets and AI strategies on demand
 - **Debouncing**: Limit rapid user input processing
-- **Canvas Optimization**: Efficient Konva.js layer management
 - **State Normalization**: Flat state structure for efficient updates
+- **Parallel Processing**: Multiple AI strategies evaluated concurrently
+- **Resource Cleanup**: Automatic cleanup of unused game objects
 
 ### Error Handling Patterns
-- **Graceful Degradation**: Fallback modes for feature failures
-- **Circuit Breaker**: Prevent cascading failures in multiplayer
-- **Retry Logic**: Automatic retry for transient network errors
+- **Input Validation**: Comprehensive sanitization for all user inputs
+- **Authorization Checks**: Player action authorization at every game operation
+- **Graceful Degradation**: Fallback modes for AI failures and network issues
+- **Circuit Breaker**: Prevent cascading failures in multiplayer synchronization
+- **Retry Logic**: Automatic retry for transient network and database errors
+- **Memory Leak Prevention**: Bounded collections and automatic cleanup
+- **Security Hardening**: Rate limiting and anti-cheat pattern detection
 - **User Feedback**: Clear error messages with recovery suggestions
-- **Logging**: Comprehensive error tracking for debugging
+- **Comprehensive Logging**: Error tracking with context for debugging
+- **State Recovery**: Automatic game state recovery from corruption
+- **Performance Monitoring**: Real-time detection of performance degradation
 
 These patterns ensure maintainable, scalable, and performant code that supports the game's educational and entertainment goals.

@@ -16,3 +16,5 @@ export { LoadingStyles } from './Loading';
 
 export { default as ErrorState } from './ErrorState';
 export type { ErrorStateProps, ErrorType } from './ErrorState';
+
+export { LoadingState } from './LoadingState';

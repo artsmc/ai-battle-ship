@@ -175,7 +175,7 @@ export function AbilityPanel({
             <span className="text-xl">{getAbilityIcon(ability)}</span>
             <div>
               <div className="font-medium text-white text-sm">
-                {'type' in ability ? ability.type.replace('_', ' ') : ability.name}
+                {'type' in ability && ability.type ? ability.type.replace('_', ' ') : ability.name || 'Unknown Ability'}
               </div>
               {ship && (
                 <div className="text-xs text-steel-400">

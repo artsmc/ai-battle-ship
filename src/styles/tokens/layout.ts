@@ -72,3 +72,10 @@ export const zIndex = {
   modal: '50',
   tooltip: '60',
 } as const;
+
+// Default export for layout tokens
+export const layout = {
+  spacing,
+  breakpoints,
+  zIndex,
+} as const;
