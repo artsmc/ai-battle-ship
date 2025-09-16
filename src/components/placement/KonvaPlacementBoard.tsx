@@ -17,8 +17,8 @@ const InteractiveGrid: React.FC<{
   onCellHover: (cell: Cell) => void
 }> = ({ placementState, onCellClick, onCellHover }) => {
   return (
-    <div className="w-[440px] h-[440px] bg-blue-900 border-2 border-blue-500 rounded-lg p-2">
-      <div className="grid grid-cols-10 gap-1 h-full">
+    <div className="w-[440px] h-[440px] bg-blue-900 border-2 border-blue-500 rounded-lg p-2" data-testid="interactive-grid">
+      <div className="grid grid-cols-10 gap-1 h-full">{/* Debug: Rendering ${100} grid cells */}
         {Array.from({ length: 100 }).map((_, index) => {
           const x = index % 10
           const y = Math.floor(index / 10)
@@ -35,6 +35,7 @@ const InteractiveGrid: React.FC<{
           return (
             <button
               key={index}
+              data-testid={`grid-cell-${x}-${y}`}
               onClick={() => onCellClick(cell)}
               onMouseEnter={() => onCellHover(cell)}
               className={`aspect-square rounded-sm border border-blue-400 transition-all ${
@@ -47,6 +48,7 @@ const InteractiveGrid: React.FC<{
                   : 'bg-blue-700 hover:bg-blue-600'
               }`}
               title={`Grid ${x},${y}${ship ? ` - ${ship.id.split('_')[0]}` : ''}`}
+              aria-label={`Grid cell ${x}, ${y}${ship ? `, occupied by ${ship.id.split('_')[0]}` : ', empty'}`}
             />
           )
         })}

@@ -10,7 +10,7 @@
 
 import React, { useCallback, useState } from 'react'
 import {
-  ArrowPathIcon,
+  ArrowPathIcon as RotateIcon,
   TrashIcon,
   SparklesIcon,
   CheckIcon,
@@ -275,7 +275,7 @@ export const EnhancedShipPalette: React.FC<EnhancedShipPaletteProps> = React.mem
   const shortcutKeys = ['1', '2', '3', '4', '5']
 
   return (
-    <div className={`enhanced-ship-palette ${className}`}>
+    <div className={`enhanced-ship-palette ${className}`} data-testid="enhanced-ship-palette">
       <div className="bg-surface-secondary rounded-lg border border-neutral-700 p-6 space-y-6">
         {/* Header with fleet status */}
         <div className="flex items-center justify-between">
@@ -311,16 +311,17 @@ export const EnhancedShipPalette: React.FC<EnhancedShipPaletteProps> = React.mem
         </div>
 
         {/* Ship Cards Grid */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3" data-testid="ship-cards-grid">
           {Object.values(SHIP_SPECS).map((spec, index) => (
-            <EnhancedShipCard
-              key={spec.kind}
-              spec={spec}
-              available={availableShips.get(spec.kind) || 0}
-              isSelected={selectedShip === spec.kind}
-              onClick={() => handleShipSelect(spec.kind)}
-              shortcutKey={shortcutKeys[index]}
-            />
+            <div key={spec.kind} data-testid={`ship-card-${spec.kind}`}>
+              <EnhancedShipCard
+                spec={spec}
+                available={availableShips.get(spec.kind) || 0}
+                isSelected={selectedShip === spec.kind}
+                onClick={() => handleShipSelect(spec.kind)}
+                shortcutKey={shortcutKeys[index]}
+              />
+            </div>
           ))}
         </div>
 
